@@ -7,7 +7,7 @@ public abstract class Message {
 
 	protected final float version;
 	protected final Headers headers = new Headers();
-	protected String body = "";
+	protected String content = "";
 
 	protected Message() {
 		this( VERSION );
@@ -17,8 +17,8 @@ public abstract class Message {
 		this.version = version;
 	}
 
-	public String getBody() {
-		return body;
+	public String getContent() {
+		return content;
 	}
 
 	public float getVersion() {

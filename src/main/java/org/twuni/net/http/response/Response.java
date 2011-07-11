@@ -7,38 +7,38 @@ public class Response extends Message {
 
 	private final Status status;
 
-	public Response( Status status, String body ) {
+	public Response( Status status, String content ) {
 		this( status );
-		setBody( body );
+		setContent( content );
 	}
 
-	public Response( Status status, String contentType, String body ) {
+	public Response( Status status, String contentType, String content ) {
 		this( status );
-		setBody( contentType, body );
+		setContent( content, contentType );
 	}
 
 	public Response( Status status ) {
 		this.status = status;
-		setBody( "" );
+		setContent( "" );
 	}
 
 	public Status getStatus() {
 		return status;
 	}
 
-	private void setBody( String body ) {
-		setBody( body, "text/plain" );
+	private void setContent( String content ) {
+		setContent( content, "text/plain" );
 	}
 
-	private void setBody( String body, String type ) {
-		this.body = body;
+	private void setContent( String content, String type ) {
+		this.content = content;
 		headers.put( Header.CONTENT_TYPE, type );
-		headers.put( Header.CONTENT_LENGTH, Integer.toString( body.getBytes().length ) );
+		headers.put( Header.CONTENT_LENGTH, Integer.toString( content.getBytes().length ) );
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "%s: {status=%s, version=%s, headers=%s, body=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, body );
+		return String.format( "%s: {status=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, content );
 	}
 
 }

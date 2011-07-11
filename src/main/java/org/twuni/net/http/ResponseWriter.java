@@ -26,7 +26,7 @@ final class ResponseWriter {
 		}
 
 		writer.write( LINE_SEPARATOR );
-		writer.write( response.getBody() );
+		writer.write( response.getContent() );
 		writer.flush();
 
 		if( response.getHeaders().get( Header.CONNECTION ).equals( "close" ) ) {
