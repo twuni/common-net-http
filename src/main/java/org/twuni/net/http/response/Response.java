@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class HttpResponse {
+public class Response {
 
-	private final HttpResponseStatus status;
+	private final ResponseStatus status;
 	private final Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
 	private final float version;
 
-	public HttpResponse( HttpResponseStatus status, float version ) {
+	public Response( ResponseStatus status, float version ) {
 		this.status = status;
 		this.version = version;
 	}
@@ -34,7 +34,7 @@ public class HttpResponse {
 		return headers;
 	}
 
-	public HttpResponseStatus getStatus() {
+	public ResponseStatus getStatus() {
 		return status;
 	}
 

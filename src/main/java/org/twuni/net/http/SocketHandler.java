@@ -7,19 +7,19 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.twuni.net.http.request.HttpRequest;
-import org.twuni.net.http.response.HttpResponse;
+import org.twuni.net.http.request.Request;
+import org.twuni.net.http.response.Response;
 
-public class HttpSocketHandler extends Thread {
+public class SocketHandler extends Thread {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private final Socket socket;
-	private final HttpRequestReader reader;
-	private final HttpRequestHandler handler;
-	private final HttpResponseWriter writer;
+	private final RequestReader reader;
+	private final RequestHandler handler;
+	private final ResponseWriter writer;
 
-	public HttpSocketHandler( Socket socket, HttpRequestReader reader, HttpRequestHandler handler, HttpResponseWriter writer ) {
+	public SocketHandler( Socket socket, RequestReader reader, RequestHandler handler, ResponseWriter writer ) {
 
 		super( String.format( "[http-%s][%s][%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress(), Integer.valueOf( socket.getPort() ) ) );
 
@@ -38,12 +38,12 @@ public class HttpSocketHandler extends Thread {
 			InputStream in = socket.getInputStream();
 			OutputStream out = socket.getOutputStream();
 
-			HttpRequest request = reader.read( in );
+			Request request = reader.read( in );
 			log.debug( String.format( "%s << %s", getName(), request ) );
 
 			in.close();
 
-			HttpResponse response = handler.respondTo( request );
+			Response response = handler.respondTo( request );
 			log.debug( String.format( "%s >> %s", getName(), response ) );
 
 			writer.write( response, out );

@@ -1,6 +1,6 @@
 package org.twuni.net.http;
 
-public enum HttpMethod {
+public enum Method {
 
 	GET,
 	HEAD,

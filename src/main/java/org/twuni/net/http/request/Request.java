@@ -8,16 +8,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.twuni.net.http.HttpMethod;
+import org.twuni.net.http.Method;
 
-public abstract class HttpRequest {
+public abstract class Request {
 
-	private final HttpMethod method;
+	private final Method method;
 	private final String resource;
 	private final float version;
 	private final Map<String, Set<String>> headers = new HashMap<String, Set<String>>();
 
-	protected HttpRequest( HttpMethod method, String resource, float version ) {
+	protected Request( Method method, String resource, float version ) {
 		this.method = method;
 		this.resource = resource;
 		this.version = version;
@@ -51,7 +51,7 @@ public abstract class HttpRequest {
 	public void parseBody( InputStream input ) throws IOException {
 	}
 
-	public HttpMethod getMethod() {
+	public Method getMethod() {
 		return method;
 	}
 

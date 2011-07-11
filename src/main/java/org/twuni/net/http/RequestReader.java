@@ -6,19 +6,19 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.twuni.net.http.request.HttpDeleteRequest;
-import org.twuni.net.http.request.HttpGetRequest;
-import org.twuni.net.http.request.HttpPostRequest;
-import org.twuni.net.http.request.HttpPutRequest;
-import org.twuni.net.http.request.HttpRequest;
+import org.twuni.net.http.request.DeleteRequest;
+import org.twuni.net.http.request.GetRequest;
+import org.twuni.net.http.request.PostRequest;
+import org.twuni.net.http.request.PutRequest;
+import org.twuni.net.http.request.Request;
 
-public class HttpRequestReader {
+public class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
-	public HttpRequest read( InputStream from ) throws IOException {
+	public Request read( InputStream from ) throws IOException {
 
-		HttpRequest request = null;
+		Request request = null;
 		Scanner scanner = new Scanner( from );
 
 		while( scanner.hasNextLine() ) {
@@ -29,7 +29,7 @@ public class HttpRequestReader {
 
 				String [] preamble = line.split( " " );
 
-				final HttpMethod method = HttpMethod.valueOf( preamble[0] );
+				final Method method = Method.valueOf( preamble[0] );
 				final String resource = preamble[1];
 				final float version = Float.parseFloat( preamble[2].split( "/" )[1] );
 
@@ -54,17 +54,17 @@ public class HttpRequestReader {
 
 	}
 
-	private HttpRequest toHttpRequest( HttpMethod method, String resource, float version ) {
+	private Request toHttpRequest( Method method, String resource, float version ) {
 
 		switch( method ) {
 			case GET:
-				return new HttpGetRequest( resource, version );
+				return new GetRequest( resource, version );
 			case POST:
-				return new HttpPostRequest( resource, version );
+				return new PostRequest( resource, version );
 			case PUT:
-				return new HttpPutRequest( resource, version );
+				return new PutRequest( resource, version );
 			case DELETE:
-				return new HttpDeleteRequest( resource, version );
+				return new DeleteRequest( resource, version );
 		}
 
 		throw new UnsupportedOperationException( String.format( "Method %s is not supported.", method ) );

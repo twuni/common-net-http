@@ -5,11 +5,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import org.twuni.net.http.response.HttpResponse;
+import org.twuni.net.http.response.Response;
 
-public class HttpResponseWriter {
+public class ResponseWriter {
 
-	public void write( HttpResponse response, OutputStream to ) throws IOException {
+	public void write( Response response, OutputStream to ) throws IOException {
 
 		Writer writer = new PrintWriter( to );
 
