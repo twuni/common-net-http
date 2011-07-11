@@ -29,8 +29,4 @@ public abstract class Message {
 		return headers;
 	}
 
-	public void setBody( String body ) {
-		this.body = body;
-	}
-
 }

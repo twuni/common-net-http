@@ -1,6 +1,5 @@
 package org.twuni.net.http.response;
 
-import org.twuni.net.http.Entity;
 import org.twuni.net.http.Header;
 import org.twuni.net.http.Message;
 
@@ -9,38 +8,36 @@ public class Response extends Message {
 	private final Status status;
 
 	public Response( Status status, String body ) {
-		this( status, "text/plain", body );
+		this( status );
+		setBody( body );
 	}
 
 	public Response( Status status, String contentType, String body ) {
-		this( status, new Entity( contentType, body ) );
-	}
-
-	public Response( Status status, Entity entity ) {
 		this( status );
-		setEntity( entity );
+		setBody( contentType, body );
 	}
 
 	public Response( Status status ) {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return String.format( "%s: {status=%s, version=%s, headers=%s, body=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, body );
-	}
-
 	public Status getStatus() {
 		return status;
 	}
 
-	public void setEntity( Entity entity ) {
+	private void setBody( String body ) {
+		setBody( body, "text/plain" );
+	}
 
-		headers.put( Header.CONTENT_TYPE, entity.getType() );
-		headers.put( Header.CONTENT_LENGTH, Integer.toString( entity.getContentLength() ) );
+	private void setBody( String body, String type ) {
+		this.body = body;
+		headers.put( Header.CONTENT_TYPE, type );
+		headers.put( Header.CONTENT_LENGTH, Integer.toString( body.getBytes().length ) );
+	}
 
-		setBody( entity.getContent() );
-
+	@Override
+	public String toString() {
+		return String.format( "%s: {status=%s, version=%s, headers=%s, body=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, body );
 	}
 
 }
