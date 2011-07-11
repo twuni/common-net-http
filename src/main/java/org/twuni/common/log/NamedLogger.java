@@ -12,6 +12,10 @@ public class NamedLogger {
 		this.name = name;
 	}
 
+	public void trace( String message ) {
+		log.trace( format( message ) );
+	}
+
 	public void debug( String message ) {
 		log.debug( format( message ) );
 	}
