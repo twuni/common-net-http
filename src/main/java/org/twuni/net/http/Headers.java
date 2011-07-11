@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Implements common operations performed on multi-valued maps.
+ */
 public class Headers {
 
 	private final Map<String, Set<String>> headers = new HashMap<String, Set<String>>();

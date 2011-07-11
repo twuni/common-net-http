@@ -4,24 +4,24 @@ import java.net.Socket;
 
 import org.twuni.common.Factory;
 
-public class SocketHandlerFactory implements Factory<SocketHandler> {
+public class WorkerFactory implements Factory<Worker> {
 
 	private final RequestReader reader = new RequestReader();
 	private final ResponseWriter writer = new ResponseWriter();
 	private final RequestHandler handler;
 
-	public SocketHandlerFactory( RequestHandler handler ) {
+	public WorkerFactory( RequestHandler handler ) {
 		this.handler = handler;
 	}
 
 	@Override
-	public SocketHandler createInstance( Object... args ) {
+	public Worker createInstance( Object... args ) {
 
 		if( args.length != 1 ) {
 			throw new IllegalArgumentException();
 		}
 
-		return new SocketHandler( (Socket) args[0], reader, handler, writer );
+		return new Worker( (Socket) args[0], reader, handler, writer );
 
 	}
 

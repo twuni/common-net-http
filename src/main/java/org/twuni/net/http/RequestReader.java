@@ -9,11 +9,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.twuni.net.exception.ConnectionClosedException;
+import org.twuni.net.http.request.ConnectRequest;
 import org.twuni.net.http.request.DeleteRequest;
 import org.twuni.net.http.request.GetRequest;
+import org.twuni.net.http.request.HeadRequest;
+import org.twuni.net.http.request.OptionsRequest;
 import org.twuni.net.http.request.PostRequest;
 import org.twuni.net.http.request.PutRequest;
 import org.twuni.net.http.request.Request;
+import org.twuni.net.http.request.TraceRequest;
 
 public class RequestReader {
 
@@ -83,6 +87,14 @@ public class RequestReader {
 				return new PutRequest( resource, version );
 			case DELETE:
 				return new DeleteRequest( resource, version );
+			case HEAD:
+				return new HeadRequest( resource, version );
+			case OPTIONS:
+				return new OptionsRequest( resource, version );
+			case CONNECT:
+				return new ConnectRequest( resource, version );
+			case TRACE:
+				return new TraceRequest( resource, version );
 		}
 
 		throw new UnsupportedOperationException( String.format( "Method %s is not supported.", method ) );

@@ -16,7 +16,7 @@ import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
 import org.twuni.net.http.response.Status;
 
-public class SocketHandler extends Thread {
+public class Worker extends Thread {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat( "EEE, d MMM yyyy HH:mm:ss z" );
 
@@ -27,7 +27,7 @@ public class SocketHandler extends Thread {
 	private final RequestHandler handler;
 	private final ResponseWriter writer;
 
-	public SocketHandler( Socket socket, RequestReader reader, RequestHandler handler, ResponseWriter writer ) {
+	public Worker( Socket socket, RequestReader reader, RequestHandler handler, ResponseWriter writer ) {
 
 		super( String.format( "[%s] [HTTP] [%s] [%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress().getHostAddress(), Integer.valueOf( socket.getPort() ) ) );
 

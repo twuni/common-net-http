@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.twuni.common.Factory;
 import org.twuni.common.log.NamedLogger;
 
-public class SocketListener extends Thread {
+public class Server extends Thread {
 
 	private final NamedLogger log;
 
 	private final int port;
 	private final Factory<? extends Thread> workerThreadFactory;
 
-	public SocketListener( int port, Factory<? extends Thread> workerThreadFactory ) {
+	public Server( int port, Factory<? extends Thread> workerThreadFactory ) {
 		super( String.format( "[%s] [%s]", workerThreadFactory.getClass().getName(), Integer.valueOf( port ) ) );
 		this.log = new NamedLogger( LoggerFactory.getLogger( getClass() ), getName() );
 		this.port = port;
