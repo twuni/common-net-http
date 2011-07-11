@@ -10,12 +10,12 @@ import org.twuni.net.http.response.Response;
 public class WorkerFactory implements Factory<Worker> {
 
 	private final RequestReader reader = new RequestReader();
-	private final Responder handler;
+	private final Responder responder;
 	private final Filter<Response> filter;
 	private final ResponseWriter writer = new ResponseWriter();
 
-	public WorkerFactory( Responder handler, Filter<Response> filter ) {
-		this.handler = handler;
+	public WorkerFactory( Responder responder, Filter<Response> filter ) {
+		this.responder = responder;
 		this.filter = filter;
 	}
 
@@ -26,7 +26,7 @@ public class WorkerFactory implements Factory<Worker> {
 			throw new IllegalArgumentException();
 		}
 
-		return new Worker( (Socket) args[0], reader, handler, writer, filter );
+		return new Worker( (Socket) args[0], reader, responder, writer, filter );
 
 	}
 

@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import org.slf4j.LoggerFactory;
 import org.twuni.common.Filter;
+import org.twuni.common.FilterChain;
 import org.twuni.common.log.NamedLogger;
 import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.exception.UnsupportedMethodException;
@@ -21,18 +22,22 @@ public class Worker extends Thread {
 
 	private final Socket socket;
 	private final RequestReader reader;
-	private final Responder handler;
+	private final Responder responder;
 	private final ResponseWriter writer;
 	private final Filter<Response> filter;
 
-	public Worker( Socket socket, RequestReader reader, Responder handler, ResponseWriter writer, Filter<Response> filter ) {
+	public Worker( Socket socket, RequestReader reader, Responder responder, ResponseWriter writer ) {
+		this( socket, reader, responder, writer, new FilterChain<Response>() );
+	}
+
+	public Worker( Socket socket, RequestReader reader, Responder responder, ResponseWriter writer, Filter<Response> filter ) {
 
 		super( String.format( "[%s] [HTTP] [%s] [%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress().getHostAddress(), Integer.valueOf( socket.getPort() ) ) );
 
 		this.log = new NamedLogger( LoggerFactory.getLogger( getClass() ), getName() );
 		this.socket = socket;
 		this.reader = reader;
-		this.handler = handler;
+		this.responder = responder;
 		this.writer = writer;
 		this.filter = filter;
 
@@ -69,7 +74,7 @@ public class Worker extends Thread {
 		log.debug( String.format( ">> %s", request ) );
 		log.info( String.format( "-> %s %s %s", request.getMethod(), request.getResource(), request.getBody() ) );
 
-		Response response = handler.respondTo( request );
+		Response response = responder.respondTo( request );
 
 		response = filter.filter( response );
 
