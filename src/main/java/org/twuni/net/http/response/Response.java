@@ -19,6 +19,7 @@ public class Response extends Message {
 
 	public Response( Status status ) {
 		this.status = status;
+		setBody( "" );
 	}
 
 	public Status getStatus() {

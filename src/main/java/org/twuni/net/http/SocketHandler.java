@@ -67,9 +67,11 @@ public class SocketHandler extends Thread {
 
 		Request request = reader.read( in );
 		log.debug( String.format( ">> %s", request ) );
+		log.info( String.format( "-> %s %s %s", request.getMethod(), request.getResource(), request.getBody() ) );
 
 		Response response = handler.respondTo( request );
 		log.debug( String.format( "<< %s", response ) );
+		log.info( String.format( "<- %s", response.getStatus() ) );
 
 		augmentResponse( response );
 

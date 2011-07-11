@@ -4,19 +4,20 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.twuni.common.Factory;
+import org.twuni.common.log.NamedLogger;
 
 public class SocketListener extends Thread {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final NamedLogger log;
 
 	private final int port;
 	private final Factory<? extends Thread> workerThreadFactory;
 
 	public SocketListener( int port, Factory<? extends Thread> workerThreadFactory ) {
-		super( String.format( "%s-%s", workerThreadFactory.getClass().getSimpleName(), Integer.valueOf( port ) ) );
+		super( String.format( "[%s] [%s]", workerThreadFactory.getClass().getName(), Integer.valueOf( port ) ) );
+		this.log = new NamedLogger( LoggerFactory.getLogger( getClass() ), getName() );
 		this.port = port;
 		this.workerThreadFactory = workerThreadFactory;
 	}
@@ -27,6 +28,7 @@ public class SocketListener extends Thread {
 		try {
 
 			ServerSocket server = new ServerSocket( port );
+			log.info( "Server started." );
 
 			while( server.isBound() ) {
 
