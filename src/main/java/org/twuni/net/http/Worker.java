@@ -4,30 +4,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.slf4j.LoggerFactory;
+import org.twuni.common.Filter;
 import org.twuni.common.log.NamedLogger;
 import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.exception.UnsupportedMethodException;
 import org.twuni.net.http.request.Request;
+import org.twuni.net.http.responder.Responder;
 import org.twuni.net.http.response.Response;
 import org.twuni.net.http.response.Status;
 
 public class Worker extends Thread {
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat( "EEE, d MMM yyyy HH:mm:ss z" );
-
 	private final NamedLogger log;
 
 	private final Socket socket;
 	private final RequestReader reader;
-	private final RequestHandler handler;
+	private final Responder handler;
 	private final ResponseWriter writer;
+	private final Filter<Response> filter;
 
-	public Worker( Socket socket, RequestReader reader, RequestHandler handler, ResponseWriter writer ) {
+	public Worker( Socket socket, RequestReader reader, Responder handler, ResponseWriter writer, Filter<Response> filter ) {
 
 		super( String.format( "[%s] [HTTP] [%s] [%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress().getHostAddress(), Integer.valueOf( socket.getPort() ) ) );
 
@@ -36,6 +34,7 @@ public class Worker extends Thread {
 		this.reader = reader;
 		this.handler = handler;
 		this.writer = writer;
+		this.filter = filter;
 
 	}
 
@@ -66,30 +65,18 @@ public class Worker extends Thread {
 	private void handle( InputStream in, OutputStream out ) throws IOException {
 
 		Request request = reader.read( in );
+
 		log.debug( String.format( ">> %s", request ) );
 		log.info( String.format( "-> %s %s %s", request.getMethod(), request.getResource(), request.getBody() ) );
 
 		Response response = handler.respondTo( request );
+
+		response = filter.filter( response );
+
 		log.debug( String.format( "<< %s", response ) );
 		log.info( String.format( "<- %s", response.getStatus() ) );
 
-		augmentResponse( response );
-
 		writer.write( response, out );
-
-		inspectResponse( response );
-
-	}
-
-	private void augmentResponse( Response response ) {
-		response.getHeaders().put( Header.DATE, DATE_FORMAT.format( new Date() ) );
-	}
-
-	private void inspectResponse( Response response ) throws IOException {
-
-		if( response.getHeaders().get( Header.CONNECTION ).equals( "close" ) ) {
-			throw new ConnectionClosedException( "The connection was closed by the server." );
-		}
 
 	}
 

@@ -1,22 +1,22 @@
-package org.twuni.net.http;
+package org.twuni.net.http.responder;
 
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
 import org.twuni.net.http.response.Status;
 
-public class StaticResponse implements RequestHandler {
+public class StaticResponder implements Responder {
 
 	private final Response response;
 
-	public StaticResponse( Status status, String contentType, String body ) {
+	public StaticResponder( Status status, String contentType, String body ) {
 		this.response = new Response( status, contentType, body );
 	}
 
-	public StaticResponse( Status status, String body ) {
+	public StaticResponder( Status status, String body ) {
 		this.response = new Response( status, body );
 	}
 
-	public StaticResponse( Status status ) {
+	public StaticResponder( Status status ) {
 		this.response = new Response( status );
 	}
 

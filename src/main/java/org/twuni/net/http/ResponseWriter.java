@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.response.Response;
 
 public class ResponseWriter {
@@ -27,6 +28,10 @@ public class ResponseWriter {
 		writer.write( LINE_SEPARATOR );
 		writer.write( response.getBody() );
 		writer.flush();
+
+		if( response.getHeaders().get( Header.CONNECTION ).equals( "close" ) ) {
+			throw new ConnectionClosedException( "The connection was closed by the server." );
+		}
 
 	}
 

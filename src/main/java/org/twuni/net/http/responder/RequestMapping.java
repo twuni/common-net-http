@@ -1,22 +1,23 @@
-package org.twuni.net.http;
+package org.twuni.net.http.responder;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.twuni.net.http.Method;
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
 import org.twuni.net.http.response.Status;
 
-public class RequestMapping implements RequestHandler {
+public class RequestMapping implements Responder {
 
-	private final Map<String, Map<Method, RequestHandler>> handlers = new HashMap<String, Map<Method, RequestHandler>>();
+	private final Map<String, Map<Method, Responder>> handlers = new HashMap<String, Map<Method, Responder>>();
 
-	public void map( Method method, String pattern, RequestHandler handler ) {
+	public void map( Method method, String pattern, Responder handler ) {
 
-		Map<Method, RequestHandler> methods = handlers.get( pattern );
+		Map<Method, Responder> methods = handlers.get( pattern );
 
 		if( methods == null ) {
-			methods = new HashMap<Method, RequestHandler>();
+			methods = new HashMap<Method, Responder>();
 			handlers.put( pattern, methods );
 		}
 
@@ -24,7 +25,7 @@ public class RequestMapping implements RequestHandler {
 
 	}
 
-	private RequestHandler lookup( Method method, String resource ) {
+	private Responder lookup( Method method, String resource ) {
 
 		Status status = Status.NOT_FOUND;
 
@@ -34,8 +35,8 @@ public class RequestMapping implements RequestHandler {
 				continue;
 			}
 
-			Map<Method, RequestHandler> methods = handlers.get( pattern );
-			RequestHandler handler = methods.get( method );
+			Map<Method, Responder> methods = handlers.get( pattern );
+			Responder handler = methods.get( method );
 
 			if( handler == null ) {
 				status = Status.METHOD_NOT_ALLOWED;
@@ -46,7 +47,7 @@ public class RequestMapping implements RequestHandler {
 
 		}
 
-		return new StaticResponse( status );
+		return new StaticResponder( status );
 
 	}
 

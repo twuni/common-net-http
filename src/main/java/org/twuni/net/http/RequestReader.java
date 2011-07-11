@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.twuni.net.exception.ConnectionClosedException;
+import org.twuni.net.http.exception.UnsupportedMethodException;
 import org.twuni.net.http.request.ConnectRequest;
 import org.twuni.net.http.request.DeleteRequest;
 import org.twuni.net.http.request.GetRequest;
@@ -97,7 +98,7 @@ public class RequestReader {
 				return new TraceRequest( resource, version );
 		}
 
-		throw new UnsupportedOperationException( String.format( "Method %s is not supported.", method ) );
+		throw new UnsupportedMethodException( method );
 
 	}
 
