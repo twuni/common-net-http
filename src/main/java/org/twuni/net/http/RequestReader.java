@@ -20,7 +20,7 @@ import org.twuni.net.http.request.PutRequest;
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.request.TraceRequest;
 
-public class RequestReader {
+final class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 

@@ -18,27 +18,25 @@ import org.twuni.net.http.response.Status;
 
 public class Worker extends Thread {
 
-	private final NamedLogger log;
+	private final RequestReader reader = new RequestReader();
+	private final ResponseWriter writer = new ResponseWriter();
 
+	private final NamedLogger log;
 	private final Socket socket;
-	private final RequestReader reader;
 	private final Responder responder;
-	private final ResponseWriter writer;
 	private final Filter<Response> filter;
 
-	public Worker( Socket socket, RequestReader reader, Responder responder, ResponseWriter writer ) {
-		this( socket, reader, responder, writer, new FilterChain<Response>() );
+	public Worker( Socket socket, Responder responder ) {
+		this( socket, responder, new FilterChain<Response>() );
 	}
 
-	public Worker( Socket socket, RequestReader reader, Responder responder, ResponseWriter writer, Filter<Response> filter ) {
+	public Worker( Socket socket, Responder responder, Filter<Response> filter ) {
 
 		super( String.format( "[%s] [HTTP] [%s] [%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress().getHostAddress(), Integer.valueOf( socket.getPort() ) ) );
 
 		this.log = new NamedLogger( LoggerFactory.getLogger( getClass() ), getName() );
 		this.socket = socket;
-		this.reader = reader;
 		this.responder = responder;
-		this.writer = writer;
 		this.filter = filter;
 
 	}

@@ -10,7 +10,7 @@ import java.io.Writer;
 import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.response.Response;
 
-public class ResponseWriter {
+final class ResponseWriter {
 
 	public void write( Response response, OutputStream to ) throws IOException {
 
