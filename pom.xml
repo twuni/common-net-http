@@ -3,14 +3,20 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.twuni.common</groupId>
-	<artifactId>net-http</artifactId>
+	<groupId>org.twuni</groupId>
+	<artifactId>common-net-http</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>HTTP Network API</name>
+	<name>Common Networking HTTP API</name>
 	<description>Contains an API for network communications via HTTP.</description>
 
+	<scm>
+		<developerConnection>scm:git:ssh:git@github.com:twuni/net-http.git</developerConnection>
+		<connection>scm:git:ssh:git@github.com:twuni/net-http.git</connection>
+		<url>scm:git:https://twuni@github.com/twuni/net-http.git</url>
+	</scm>
+	
 	<build>
 
 		<pluginManagement>
