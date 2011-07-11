@@ -12,6 +12,10 @@ public class RequestMapping implements Responder {
 
 	private final Map<String, Map<Method, Responder>> handlers = new HashMap<String, Map<Method, Responder>>();
 
+	public void map( Method method, String pattern, Class<? extends Responder> type ) throws InstantiationException, IllegalAccessException {
+		map( method, pattern, type.newInstance() );
+	}
+
 	public void map( Method method, String pattern, Responder handler ) {
 
 		Map<Method, Responder> methods = handlers.get( pattern );
