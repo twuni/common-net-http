@@ -1,4 +1,4 @@
-package org.twuni.net.http;
+package org.twuni.net;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -7,15 +7,17 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpListener extends Thread {
+public class SocketListener extends Thread {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private final int port;
+	private final Factory<? extends Thread> workerThreadFactory;
 
-	public HttpListener( int port ) {
-		super( String.format( "http-%s", Integer.valueOf( port ) ) );
+	public SocketListener( int port, Factory<? extends Thread> workerThreadFactory ) {
+		super( String.format( "%s-%s", workerThreadFactory.getClass().getSimpleName(), Integer.valueOf( port ) ) );
 		this.port = port;
+		this.workerThreadFactory = workerThreadFactory;
 	}
 
 	@Override
@@ -30,8 +32,8 @@ public class HttpListener extends Thread {
 				try {
 
 					Socket socket = server.accept();
-					Thread handler = new HttpSocketHandler( socket );
-					handler.start();
+					Thread worker = workerThreadFactory.createInstance( socket );
+					worker.start();
 
 				} catch( IOException exception ) {
 					log.warn( "An error occurred while attempting to accept a connection.", exception );
@@ -42,6 +44,7 @@ public class HttpListener extends Thread {
 		} catch( IOException exception ) {
 			log.error( String.format( "Unable to bind to port %s", Integer.valueOf( port ) ), exception );
 		}
+
 	}
 
 }

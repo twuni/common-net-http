@@ -1,25 +1,33 @@
 package org.twuni.net.http;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.twuni.net.http.request.HttpRequest;
+import org.twuni.net.http.response.HttpResponse;
 
 public class HttpSocketHandler extends Thread {
-
-	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private final Socket socket;
+	private final HttpRequestReader reader;
+	private final HttpRequestHandler handler;
+	private final HttpResponseWriter writer;
 
-	public HttpSocketHandler( Socket socket ) {
+	public HttpSocketHandler( Socket socket, HttpRequestReader reader, HttpRequestHandler handler, HttpResponseWriter writer ) {
+
 		super( String.format( "[http-%s][%s][%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress(), Integer.valueOf( socket.getPort() ) ) );
+
 		this.socket = socket;
+		this.reader = reader;
+		this.handler = handler;
+		this.writer = writer;
+
 	}
 
 	@Override
@@ -27,33 +35,23 @@ public class HttpSocketHandler extends Thread {
 
 		try {
 
-			Scanner scanner = new Scanner( socket.getInputStream() );
-			HttpRequest request = null;
+			InputStream in = socket.getInputStream();
+			OutputStream out = socket.getOutputStream();
 
-			while( scanner.hasNextLine() ) {
+			HttpRequest request = reader.read( in );
+			log.debug( String.format( "%s << %s", getName(), request ) );
 
-				String line = scanner.nextLine();
-				log.debug( String.format( "%s << %s", getName(), line ) );
+			in.close();
 
-				if( request == null ) {
-					String [] preamble = line.split( " " );
-					request = new HttpRequest( HttpMethod.valueOf( preamble[0] ), preamble[1], Float.parseFloat( preamble[2].split( "/" )[1] ) );
-					continue;
-				}
+			HttpResponse response = handler.respondTo( request );
+			log.debug( String.format( "%s >> %s", getName(), response ) );
 
-				if( "".equals( line ) || line == null ) {
-					break;
-				}
-
-				Matcher matcher = HEADER.matcher( line );
-				request.addHeader( matcher.replaceAll( "$1" ), matcher.replaceAll( "$2" ) );
-
-			}
-
-			// TODO: For certain methods, read the request body.
+			writer.write( response, out );
 
 			socket.close();
 
+		} catch( UnsupportedOperationException exception ) {
+			log.warn( exception.getMessage() );
 		} catch( IOException exception ) {
 			log.error( "An unknown error occurred.", exception );
 		}
