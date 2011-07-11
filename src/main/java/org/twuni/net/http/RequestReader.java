@@ -8,8 +8,6 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.request.DeleteRequest;
 import org.twuni.net.http.request.GetRequest;
@@ -21,16 +19,12 @@ public class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
-
 	public Request read( InputStream from ) throws IOException {
 
 		Request request = null;
 		BufferedReader reader = new BufferedReader( new InputStreamReader( from ) );
 
 		for( String line = reader.readLine(); line != null && !"".equals( line ); line = reader.readLine() ) {
-
-			log.debug( line );
 
 			if( request == null ) {
 
