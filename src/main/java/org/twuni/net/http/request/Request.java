@@ -30,7 +30,7 @@ public abstract class Request extends Message {
 
 	@Override
 	public String toString() {
-		return String.format( "%s: { method: %s, resource: %s, version: %s, headers: %s, body: \"%s\" }", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, body );
+		return String.format( "%s: {method=%s, resource=%s, version=%s, headers=%s, body=%s}", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, body );
 	}
 
 }

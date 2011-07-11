@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.slf4j.LoggerFactory;
 import org.twuni.net.exception.ConnectionClosedException;
@@ -14,6 +17,8 @@ import org.twuni.net.http.response.Status;
 import org.twuni.net.log.NamedLogger;
 
 public class SocketHandler extends Thread {
+
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat( "EEE, d MMM yyyy HH:mm:ss z" );
 
 	private final NamedLogger log;
 
@@ -66,15 +71,21 @@ public class SocketHandler extends Thread {
 		Response response = handler.respondTo( request );
 		log.debug( String.format( "<< %s", response ) );
 
+		augmentResponse( response );
+
 		writer.write( response, out );
 
 		inspectResponse( response );
 
 	}
 
+	private void augmentResponse( Response response ) {
+		response.getHeaders().put( Header.DATE, DATE_FORMAT.format( new Date() ) );
+	}
+
 	private void inspectResponse( Response response ) throws IOException {
 
-		if( response.getHeader( Header.CONNECTION ).equals( "close" ) ) {
+		if( response.getHeaders().get( Header.CONNECTION ).equals( "close" ) ) {
 			throw new ConnectionClosedException( "The connection was closed by the server." );
 		}
 

@@ -17,8 +17,9 @@ public class ResponseWriter {
 
 		writer.write( String.format( "HTTP/%.1f %s%s", Float.valueOf( response.getVersion() ), response.getStatus(), LINE_SEPARATOR ) );
 
-		for( String key : response.getHeaders().keySet() ) {
-			for( String value : response.getHeaders().get( key ) ) {
+		Headers headers = response.getHeaders();
+		for( String key : headers.keySet() ) {
+			for( String value : headers.getAll( key ) ) {
 				writer.write( String.format( "%s: %s%s", key, value, LINE_SEPARATOR ) );
 			}
 		}

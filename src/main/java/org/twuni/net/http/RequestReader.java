@@ -52,7 +52,7 @@ public class RequestReader {
 
 			Matcher matcher = HEADER.matcher( line );
 
-			request.addHeader( matcher.replaceAll( "$1" ), matcher.replaceAll( "$2" ) );
+			request.getHeaders().add( matcher.replaceAll( "$1" ), matcher.replaceAll( "$2" ) );
 
 		}
 
@@ -68,7 +68,7 @@ public class RequestReader {
 
 	private void extractRequestBody( Reader reader, Request request ) throws IOException {
 
-		int length = Integer.parseInt( request.getHeader( "Content-Length", "0" ) );
+		int length = Integer.parseInt( request.getHeaders().get( "Content-Length", "0" ) );
 
 		if( length > 0 ) {
 			char [] buffer = new char [length];
