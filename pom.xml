@@ -7,7 +7,7 @@
 	<artifactId>net-http</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>HTTP Network API</name>
 	<description>Contains an API for network communications via HTTP.</description>
 
@@ -62,12 +62,14 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 			<scope>runtime</scope>
 		</dependency>
+
 	</dependencies>
 
 </project>
