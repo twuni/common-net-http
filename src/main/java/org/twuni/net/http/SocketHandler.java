@@ -5,14 +5,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.twuni.net.exception.ConnectionClosedException;
+import org.twuni.net.http.exception.UnsupportedMethodException;
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
+import org.twuni.net.http.response.Status;
+import org.twuni.net.log.NamedLogger;
 
 public class SocketHandler extends Thread {
 
-	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final NamedLogger log;
 
 	private final Socket socket;
 	private final RequestReader reader;
@@ -21,8 +24,9 @@ public class SocketHandler extends Thread {
 
 	public SocketHandler( Socket socket, RequestReader reader, RequestHandler handler, ResponseWriter writer ) {
 
-		super( String.format( "[http-%s][%s][%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress(), Integer.valueOf( socket.getPort() ) ) );
+		super( String.format( "[%s] [HTTP] [%s] [%s]", Integer.valueOf( socket.getLocalPort() ), socket.getInetAddress().getHostAddress(), Integer.valueOf( socket.getPort() ) ) );
 
+		this.log = new NamedLogger( LoggerFactory.getLogger( getClass() ), getName() );
 		this.socket = socket;
 		this.reader = reader;
 		this.handler = handler;
@@ -35,27 +39,52 @@ public class SocketHandler extends Thread {
 
 		try {
 
-			InputStream in = socket.getInputStream();
-			OutputStream out = socket.getOutputStream();
+			while( true ) {
+				try {
+					handle( socket.getInputStream(), socket.getOutputStream() );
+				} catch( UnsupportedMethodException exception ) {
+					log.info( exception.getMessage() );
+					writer.write( new Response( Status.METHOD_NOT_ALLOWED ), socket.getOutputStream() );
+				}
+			}
 
-			Request request = reader.read( in );
-			log.debug( String.format( "%s << %s", getName(), request ) );
-
-			in.close();
-
-			Response response = handler.respondTo( request );
-			log.debug( String.format( "%s >> %s", getName(), response ) );
-
-			writer.write( response, out );
-
-			socket.close();
-
-		} catch( UnsupportedOperationException exception ) {
-			log.warn( exception.getMessage() );
+		} catch( ConnectionClosedException exception ) {
+			log.debug( exception.getMessage() );
 		} catch( IOException exception ) {
-			log.error( "An unknown error occurred.", exception );
+			log.info( exception.getMessage() );
 		}
 
+		close();
+
+	}
+
+	private void handle( InputStream in, OutputStream out ) throws IOException {
+
+		Request request = reader.read( in );
+		log.debug( String.format( ">> %s", request ) );
+
+		Response response = handler.respondTo( request );
+		log.debug( String.format( "<< %s", response ) );
+
+		writer.write( response, out );
+
+		inspectResponse( response );
+
+	}
+
+	private void inspectResponse( Response response ) throws IOException {
+
+		if( response.getHeader( Header.CONNECTION ).equals( "close" ) ) {
+			throw new ConnectionClosedException( "The connection was closed by the server." );
+		}
+
+	}
+
+	public void close() {
+		try {
+			socket.close();
+		} catch( IOException ignore ) {
+		}
 	}
 
 }

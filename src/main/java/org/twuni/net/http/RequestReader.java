@@ -1,11 +1,16 @@
 package org.twuni.net.http;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.request.DeleteRequest;
 import org.twuni.net.http.request.GetRequest;
 import org.twuni.net.http.request.PostRequest;
@@ -16,14 +21,16 @@ public class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
 	public Request read( InputStream from ) throws IOException {
 
 		Request request = null;
-		Scanner scanner = new Scanner( from );
+		BufferedReader reader = new BufferedReader( new InputStreamReader( from ) );
 
-		while( scanner.hasNextLine() ) {
+		for( String line = reader.readLine(); line != null && !"".equals( line ); line = reader.readLine() ) {
 
-			String line = scanner.nextLine();
+			log.debug( line );
 
 			if( request == null ) {
 
@@ -44,13 +51,30 @@ public class RequestReader {
 			}
 
 			Matcher matcher = HEADER.matcher( line );
+
 			request.addHeader( matcher.replaceAll( "$1" ), matcher.replaceAll( "$2" ) );
 
 		}
 
-		request.parseBody( from );
+		if( request == null ) {
+			throw new ConnectionClosedException( "The connection was closed by the client." );
+		}
+
+		extractRequestBody( reader, request );
 
 		return request;
+
+	}
+
+	private void extractRequestBody( Reader reader, Request request ) throws IOException {
+
+		int length = Integer.parseInt( request.getHeader( "Content-Length", "0" ) );
+
+		if( length > 0 ) {
+			char [] buffer = new char [length];
+			reader.read( buffer );
+			request.setBody( new String( buffer ) );
+		}
 
 	}
 

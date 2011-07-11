@@ -1,5 +1,7 @@
 package org.twuni.net.http;
 
+import static org.twuni.net.http.Message.LINE_SEPARATOR;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -13,14 +15,16 @@ public class ResponseWriter {
 
 		Writer writer = new PrintWriter( to );
 
-		writer.write( String.format( "HTTP/%.1f %s\n", Float.valueOf( response.getVersion() ), response.getStatus() ) );
+		writer.write( String.format( "HTTP/%.1f %s%s", Float.valueOf( response.getVersion() ), response.getStatus(), LINE_SEPARATOR ) );
 
 		for( String key : response.getHeaders().keySet() ) {
 			for( String value : response.getHeaders().get( key ) ) {
-				writer.write( String.format( "%s: %s\n", key, value ) );
+				writer.write( String.format( "%s: %s%s", key, value, LINE_SEPARATOR ) );
 			}
 		}
 
+		writer.write( LINE_SEPARATOR );
+		writer.write( response.getBody() );
 		writer.flush();
 
 	}

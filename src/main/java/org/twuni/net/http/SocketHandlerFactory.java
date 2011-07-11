@@ -8,7 +8,7 @@ import java.util.Date;
 import org.twuni.net.Factory;
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
-import org.twuni.net.http.response.ResponseStatus;
+import org.twuni.net.http.response.Status;
 
 public class SocketHandlerFactory implements Factory<SocketHandler> {
 
@@ -21,11 +21,15 @@ public class SocketHandlerFactory implements Factory<SocketHandler> {
 		@Override
 		public Response respondTo( Request request ) {
 
-			Response response = new Response( ResponseStatus.OK, request.getVersion() );
+			Response response = new Response( Status.OK );
+
+			String body = "There is nothing here. Go away.";
 
 			response.addHeader( "Date", dateFormat.format( new Date() ) );
 			response.addHeader( "Content-Type", "text/plain; charset=UTF-8" );
-			response.addHeader( "Transfer-Encoding", "chunked" );
+			response.addHeader( "Content-Length", Integer.toString( body.getBytes().length ) );
+
+			response.setBody( body );
 
 			return response;
 
