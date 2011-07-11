@@ -1,4 +1,4 @@
-package org.twuni.net.log;
+package org.twuni.common.log;
 
 import org.slf4j.Logger;
 

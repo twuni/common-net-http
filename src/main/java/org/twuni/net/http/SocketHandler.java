@@ -9,12 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.slf4j.LoggerFactory;
+import org.twuni.common.log.NamedLogger;
 import org.twuni.net.exception.ConnectionClosedException;
 import org.twuni.net.http.exception.UnsupportedMethodException;
 import org.twuni.net.http.request.Request;
 import org.twuni.net.http.response.Response;
 import org.twuni.net.http.response.Status;
-import org.twuni.net.log.NamedLogger;
 
 public class SocketHandler extends Thread {
 

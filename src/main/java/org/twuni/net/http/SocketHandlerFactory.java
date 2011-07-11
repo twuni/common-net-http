@@ -2,7 +2,7 @@ package org.twuni.net.http;
 
 import java.net.Socket;
 
-import org.twuni.net.Factory;
+import org.twuni.common.Factory;
 
 public class SocketHandlerFactory implements Factory<SocketHandler> {
 

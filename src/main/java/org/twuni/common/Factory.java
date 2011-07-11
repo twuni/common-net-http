@@ -1,4 +1,4 @@
-package org.twuni.net;
+package org.twuni.common;
 
 public interface Factory<T> {
 
