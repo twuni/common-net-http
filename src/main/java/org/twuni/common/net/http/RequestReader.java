@@ -72,7 +72,7 @@ final class RequestReader {
 		if( length > 0 ) {
 			char [] buffer = new char [length];
 			reader.read( buffer );
-			request.setBody( new String( buffer ) );
+			request.setContent( new String( buffer ) );
 		}
 
 	}

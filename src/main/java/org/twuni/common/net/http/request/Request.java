@@ -28,13 +28,13 @@ public abstract class Request extends Message {
 		return resource;
 	}
 
-	public void setBody( String body ) {
-		this.content = body;
+	public void setContent( String content ) {
+		this.content = content;
 	}
 
 	@Override
 	public String toString() {
-		return String.format( "%s: {method=%s, resource=%s, version=%s, headers=%s, body=%s}", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, content );
+		return String.format( "%s: {method=%s, resource=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, content );
 	}
 
 }
