@@ -8,6 +8,10 @@ import org.twuni.common.net.http.response.filter.DateFilter;
 
 public class Server extends org.twuni.common.net.Server {
 
+	public Server( int port, Filter<Response> filter, Class<?>... annotatedClasses ) {
+		this( port, new RequestMapping( annotatedClasses ), filter );
+	}
+
 	public Server( int port, Class<?>... annotatedClasses ) {
 		this( port, new RequestMapping( annotatedClasses ) );
 	}
