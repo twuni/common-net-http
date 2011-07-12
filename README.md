@@ -37,3 +37,19 @@ that we want our static response to be *Hello, world!*.
 	new Server( 8080, mapping ).start();
 
 Here, we are saying that we want to start up a server on port `8080` using the mapping we just put together.
+
+If you prefer, you can also use annotations to create your request mappings:
+
+	@RespondsTo( "/hello" )
+	public class HelloWorld implements Responder {
+	
+		public static void main( String [] args ) {
+			new Server( 8080, HelloWorld.class ).start();
+		}
+	
+		@Override
+		public Response respondTo( Request request ) {
+			return new Response( Status.OK, "Hello, world!" );
+		}
+	
+	}
