@@ -20,10 +20,17 @@ public class RequestMapping implements Responder {
 	private final AnnotationFilter annotationFilter = new AnnotationFilter( RespondsTo.class, Responder.class );
 	private final Map<String, Map<Method, Responder>> handlers = new HashMap<String, Map<Method, Responder>>();
 
-	@SuppressWarnings( "unchecked" )
-	public void map( Class<?>... types ) {
+	public RequestMapping() {
+	}
 
-		Collection<Class<?>> filtered = annotationFilter.filter( Arrays.asList( types ) );
+	public RequestMapping( Class<?>... annotatedClasses ) {
+		map( annotatedClasses );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	public void map( Class<?>... annotatedClasses ) {
+
+		Collection<Class<?>> filtered = annotationFilter.filter( Arrays.asList( annotatedClasses ) );
 
 		for( Class<?> type : filtered ) {
 
