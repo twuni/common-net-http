@@ -3,7 +3,7 @@ package org.twuni.common.net.http;
 public abstract class Message {
 
 	public static final float VERSION = 1.1f;
-	public static final String LINE_SEPARATOR = "\n";
+	public static final String LINE_SEPARATOR = "\r\n";
 
 	protected final float version;
 	protected final Headers headers = new Headers();

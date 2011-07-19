@@ -23,8 +23,6 @@ public class ExceptionHandler implements Responder {
 			return responder.respondTo( request );
 		} catch( UnsupportedMethodException exception ) {
 			return new Response( Status.METHOD_NOT_ALLOWED );
-		} catch( NumberFormatException exception ) {
-			return new Response( Status.BAD_REQUEST );
 		} catch( IllegalArgumentException exception ) {
 			return new Response( Status.BAD_REQUEST );
 		} catch( RuntimeException exception ) {
