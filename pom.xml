@@ -12,9 +12,9 @@
 	<description>Contains an API for network communications via HTTP.</description>
 
 	<scm>
-		<developerConnection>scm:git:ssh:git@github.com:twuni/net-http.git</developerConnection>
-		<connection>scm:git:ssh:git@github.com:twuni/net-http.git</connection>
-		<url>scm:git:https://twuni@github.com/twuni/net-http.git</url>
+		<developerConnection>scm:git:ssh:git@github.com:twuni/common-net-http.git</developerConnection>
+		<connection>scm:git:ssh:git@github.com:twuni/common-net-http.git</connection>
+		<url>scm:git:https://twuni@github.com/twuni/common-net-http.git</url>
 	</scm>
 
 	<developers>
