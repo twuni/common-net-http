@@ -8,6 +8,8 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.twuni.common.net.exception.ConnectionClosedException;
 import org.twuni.common.net.http.exception.UnsupportedMethodException;
 import org.twuni.common.net.http.request.ConnectRequest;
@@ -24,6 +26,8 @@ final class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
+	private final Logger log = LoggerFactory.getLogger( getClass() );
+
 	public Request read( InputStream from ) throws IOException {
 
 		Request request = null;
@@ -35,11 +39,18 @@ final class RequestReader {
 
 				String [] preamble = line.split( " " );
 
-				final Method method = Method.valueOf( preamble[0] );
-				final String resource = preamble[1];
-				final float version = Float.parseFloat( preamble[2].split( "/" )[1] );
+				try {
 
-				request = toHttpRequest( method, resource, version );
+					final Method method = Method.valueOf( preamble[0] );
+					final String resource = preamble[1];
+					final float version = Float.parseFloat( preamble[2].split( "/" )[1] );
+
+					request = toHttpRequest( method, resource, version );
+
+				} catch( IllegalArgumentException exception ) {
+					log.warn( String.format( "Discarding junk line: %s", line ) );
+					continue;
+				}
 
 				continue;
 

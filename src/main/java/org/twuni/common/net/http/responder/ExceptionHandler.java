@@ -28,7 +28,7 @@ public class ExceptionHandler implements Responder {
 		} catch( IllegalArgumentException exception ) {
 			return new Response( Status.BAD_REQUEST );
 		} catch( RuntimeException exception ) {
-			log.warn( exception.getMessage() );
+			log.warn( String.format( "[%s] %s", exception.getClass().getName(), exception.getMessage() ) );
 			return new Response( Status.INTERNAL_SERVER_ERROR );
 		} catch( Exception exception ) {
 			throw new RuntimeException( exception );
