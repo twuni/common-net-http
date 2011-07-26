@@ -45,7 +45,7 @@ public class FileResponder implements Responder {
 	protected byte [] readFully( File file ) throws FileNotFoundException, IOException {
 		FileInputStream in = new FileInputStream( file );
 		byte [] buffer = new byte [(int) file.length()];
-		for( int length = 0; length < buffer.length; length += in.read( buffer ) ) {
+		for( int length = 0; length < buffer.length; length += in.read( buffer, length, buffer.length - length ) ) {
 		}
 		in.close();
 		return buffer;
