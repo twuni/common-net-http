@@ -7,7 +7,7 @@ public abstract class Message {
 
 	protected final float version;
 	protected final Headers headers = new Headers();
-	protected String content = "";
+	protected byte [] content = new byte[0];
 
 	protected Message() {
 		this( VERSION );
@@ -17,7 +17,7 @@ public abstract class Message {
 		this.version = version;
 	}
 
-	public String getContent() {
+	public byte [] getContent() {
 		return content;
 	}
 

@@ -26,8 +26,9 @@ final class ResponseWriter {
 		}
 
 		writer.write( LINE_SEPARATOR );
-		writer.write( response.getContent() );
 		writer.flush();
+		to.write( response.getContent() );
+		to.flush();
 
 		if( response.getHeaders().get( Header.CONNECTION ).equals( "close" ) ) {
 			throw new ConnectionClosedException( "The connection was closed by the server." );

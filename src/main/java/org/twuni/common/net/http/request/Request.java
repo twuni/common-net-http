@@ -28,7 +28,7 @@ public abstract class Request extends Message {
 		return resource;
 	}
 
-	public void setContent( String content ) {
+	public void setContent( byte [] content ) {
 		this.content = content;
 	}
 

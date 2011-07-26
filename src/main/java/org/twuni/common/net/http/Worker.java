@@ -63,7 +63,7 @@ public class Worker extends Thread {
 		Request request = reader.read( in );
 
 		log.debug( String.format( ">> %s", request ) );
-		log.info( String.format( "-> %s %s %s", request.getMethod(), request.getResource(), request.getContent() ) );
+		log.info( String.format( "-> %s %s %s", request.getMethod(), request.getResource(), new String( request.getContent() ) ) );
 
 		Response response = responder.respondTo( request );
 
