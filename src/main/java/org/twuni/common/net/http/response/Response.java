@@ -1,7 +1,10 @@
 package org.twuni.common.net.http.response;
 
+import static org.twuni.common.net.http.util.MimeUtils.getContentType;
+
 import org.twuni.common.net.http.Header;
 import org.twuni.common.net.http.Message;
+import org.twuni.common.util.Base64;
 
 public class Response extends Message {
 
@@ -37,11 +40,11 @@ public class Response extends Message {
 	}
 
 	private void setContent( byte [] content ) {
-		setContent( content, "application/octet-stream" );
+		setContent( content, getContentType( content ) );
 	}
 
 	private void setContent( String content ) {
-		setContent( content, "text/plain" );
+		setContent( content.getBytes() );
 	}
 
 	private void setContent( String content, String type ) {
@@ -56,7 +59,7 @@ public class Response extends Message {
 
 	@Override
 	public String toString() {
-		return String.format( "%s: {status=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, new String( content ) );
+		return String.format( "%s: {status=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, Base64.encode( content ) );
 	}
 
 }

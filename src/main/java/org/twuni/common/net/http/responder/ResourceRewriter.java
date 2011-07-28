@@ -1,5 +1,6 @@
 package org.twuni.common.net.http.responder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,23 +25,41 @@ public class ResourceRewriter implements Responder {
 	}
 
 	public void rewrite( String resource, String... mappings ) {
-		mapping.put( resource, Arrays.asList( mappings ) );
+		List<String> to = new ArrayList<String>();
+		to.addAll( Arrays.asList( mappings ) );
+		mapping.put( resource, to );
 	}
 
 	@Override
 	public Response respondTo( Request request ) {
-		List<String> candidates = mapping.get( request.getResource() );
-		if( candidates == null ) {
-			return responder.respondTo( request );
-		}
+
+		List<String> redirects = getRedirects( request.getResource() );
+
 		Response response = new Response( Status.NOT_FOUND );
-		for( String candidate : candidates ) {
-			response = responder.respondTo( new Request( request.getMethod(), candidate, request.getVersion() ) );
+
+		for( String redirect : redirects ) {
+			response = responder.respondTo( new Request( request.getMethod(), redirect, request.getVersion() ) );
 			if( !Status.NOT_FOUND.equals( response.getStatus() ) ) {
-				return response;
+				break;
 			}
 		}
+
 		return response;
+
+	}
+
+	protected List<String> getRedirects( String resource ) {
+
+		List<String> redirects = mapping.get( resource );
+
+		if( redirects == null ) {
+			redirects = new ArrayList<String>();
+		}
+
+		redirects.add( 0, resource );
+
+		return redirects;
+
 	}
 
 }

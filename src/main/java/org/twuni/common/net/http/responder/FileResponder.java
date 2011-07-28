@@ -11,22 +11,14 @@ import org.twuni.common.net.http.request.Request;
 import org.twuni.common.net.http.response.Response;
 import org.twuni.common.net.http.response.Status;
 
-import eu.medsea.mimeutil.MimeType;
-import eu.medsea.mimeutil.MimeUtil2;
-
 public class FileResponder implements Responder {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 
-	private static final MimeType UNKNOWN_TYPE = new MimeType( "application/octet-stream" );
-
 	private final File parent;
-	private final MimeUtil2 mime;
 
 	public FileResponder( File parent ) {
 		this.parent = parent;
-		this.mime = new MimeUtil2();
-		mime.registerMimeDetector( "eu.medsea.mimeutil.detector.MagicMimeMimeDetector" );
 	}
 
 	@Override
@@ -34,17 +26,13 @@ public class FileResponder implements Responder {
 		try {
 			File file = new File( parent, request.getResource() );
 			byte [] buffer = readFully( file );
-			return new Response( Status.OK, getContentType( buffer ), buffer );
+			return new Response( Status.OK, buffer );
 		} catch( FileNotFoundException exception ) {
 			return new Response( Status.NOT_FOUND );
 		} catch( IOException exception ) {
 			log.warn( exception.toString() );
 			return new Response( Status.INTERNAL_SERVER_ERROR );
 		}
-	}
-
-	private String getContentType( byte [] buffer ) {
-		return mime.getMimeTypes( buffer, UNKNOWN_TYPE ).iterator().next().toString();
 	}
 
 	protected byte [] readFully( File file ) throws FileNotFoundException, IOException {

@@ -2,6 +2,7 @@ package org.twuni.common.net.http.request;
 
 import org.twuni.common.net.http.Message;
 import org.twuni.common.net.http.Method;
+import org.twuni.common.util.Base64;
 
 public class Request extends Message {
 
@@ -34,7 +35,7 @@ public class Request extends Message {
 
 	@Override
 	public String toString() {
-		return String.format( "%s: {method=%s, resource=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, new String( content ) );
+		return String.format( "%s: {method=%s, resource=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), method, resource, Float.toString( version ), headers, Base64.encode( content ) );
 	}
 
 }
