@@ -18,7 +18,7 @@ public class RequestMapping implements Responder {
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
 	private final AnnotationFilter annotationFilter = new AnnotationFilter( RespondsTo.class, Responder.class );
-	private final Map<String, Map<Method, Responder>> handlers = new HashMap<String, Map<Method, Responder>>();
+	private final Map<String, Map<Method, Responder>> responders = new HashMap<String, Map<Method, Responder>>();
 
 	public RequestMapping() {
 	}
@@ -52,11 +52,11 @@ public class RequestMapping implements Responder {
 
 	public void map( Method method, String pattern, Responder handler ) {
 
-		Map<Method, Responder> methods = handlers.get( pattern );
+		Map<Method, Responder> methods = responders.get( pattern );
 
 		if( methods == null ) {
 			methods = new HashMap<Method, Responder>();
-			handlers.put( pattern, methods );
+			responders.put( pattern, methods );
 		}
 
 		methods.put( method, handler );
@@ -72,21 +72,23 @@ public class RequestMapping implements Responder {
 
 		Status status = Status.NOT_FOUND;
 
-		for( String pattern : handlers.keySet() ) {
+		for( String pattern : responders.keySet() ) {
 
 			if( !resource.matches( pattern ) ) {
 				continue;
 			}
 
-			Map<Method, Responder> methods = handlers.get( pattern );
-			Responder handler = methods.get( method );
+			Map<Method, Responder> methods = responders.get( pattern );
+			Responder responder = methods.get( method );
 
-			if( handler == null ) {
+			if( responder == null ) {
 				status = Status.METHOD_NOT_ALLOWED;
 				continue;
 			}
 
-			return handler;
+			log.debug( String.format( "Mapped %s %s to %s via %s", method, resource, responder.getClass().getName(), pattern ) );
+
+			return responder;
 
 		}
 

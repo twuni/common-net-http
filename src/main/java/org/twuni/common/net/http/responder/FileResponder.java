@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.twuni.common.net.http.request.Request;
 import org.twuni.common.net.http.response.Response;
 import org.twuni.common.net.http.response.Status;
@@ -13,6 +15,8 @@ import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil2;
 
 public class FileResponder implements Responder {
+
+	private final Logger log = LoggerFactory.getLogger( getClass() );
 
 	private static final MimeType UNKNOWN_TYPE = new MimeType( "application/octet-stream" );
 
@@ -34,6 +38,7 @@ public class FileResponder implements Responder {
 		} catch( FileNotFoundException exception ) {
 			return new Response( Status.NOT_FOUND );
 		} catch( IOException exception ) {
+			log.warn( exception.toString() );
 			return new Response( Status.INTERNAL_SERVER_ERROR );
 		}
 	}

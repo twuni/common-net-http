@@ -12,15 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.twuni.common.net.exception.ConnectionClosedException;
 import org.twuni.common.net.http.exception.UnsupportedMethodException;
-import org.twuni.common.net.http.request.ConnectRequest;
-import org.twuni.common.net.http.request.DeleteRequest;
-import org.twuni.common.net.http.request.GetRequest;
-import org.twuni.common.net.http.request.HeadRequest;
-import org.twuni.common.net.http.request.OptionsRequest;
-import org.twuni.common.net.http.request.PostRequest;
-import org.twuni.common.net.http.request.PutRequest;
 import org.twuni.common.net.http.request.Request;
-import org.twuni.common.net.http.request.TraceRequest;
 
 final class RequestReader {
 
@@ -91,23 +83,18 @@ final class RequestReader {
 
 	private Request toHttpRequest( Method method, String resource, float version ) {
 
+		Request request = new Request( method, resource, version );
+
 		switch( method ) {
 			case GET:
-				return new GetRequest( resource, version );
 			case POST:
-				return new PostRequest( resource, version );
 			case PUT:
-				return new PutRequest( resource, version );
 			case DELETE:
-				return new DeleteRequest( resource, version );
 			case HEAD:
-				return new HeadRequest( resource, version );
 			case OPTIONS:
-				return new OptionsRequest( resource, version );
 			case CONNECT:
-				return new ConnectRequest( resource, version );
 			case TRACE:
-				return new TraceRequest( resource, version );
+				return request;
 		}
 
 		throw new UnsupportedMethodException( method );

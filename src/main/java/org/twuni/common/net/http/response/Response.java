@@ -56,7 +56,7 @@ public class Response extends Message {
 
 	@Override
 	public String toString() {
-		return String.format( "%s: {status=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, content );
+		return String.format( "%s: {status=%s, version=%s, headers=%s, content=%s}", getClass().getSimpleName(), status, Float.toString( version ), headers, new String( content ) );
 	}
 
 }

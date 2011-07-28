@@ -25,8 +25,14 @@ public class ExceptionHandler implements Responder {
 			return new Response( Status.METHOD_NOT_ALLOWED );
 		} catch( IllegalArgumentException exception ) {
 			return new Response( Status.BAD_REQUEST );
+		} catch( NullPointerException exception ) {
+			log.warn( exception.toString() );
+			for( StackTraceElement element : exception.getStackTrace() ) {
+				log.warn( String.format( " - in %s.%s:%s", element.getClassName(), element.getMethodName(), Integer.valueOf( element.getLineNumber() ) ) );
+			}
+			return new Response( Status.INTERNAL_SERVER_ERROR );
 		} catch( RuntimeException exception ) {
-			log.warn( String.format( "[%s] %s", exception.getClass().getName(), exception.getMessage() ) );
+			log.warn( String.format( "[%s] %s", exception.getClass().getName(), exception.toString() ) );
 			return new Response( Status.INTERNAL_SERVER_ERROR );
 		} catch( Exception exception ) {
 			throw new RuntimeException( exception );
