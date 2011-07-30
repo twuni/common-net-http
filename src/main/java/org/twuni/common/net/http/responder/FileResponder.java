@@ -1,5 +1,7 @@
 package org.twuni.common.net.http.responder;
 
+import static org.twuni.common.net.http.util.MimeUtils.getContentType;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +28,7 @@ public class FileResponder implements Responder {
 		try {
 			File file = new File( parent, request.getResource() );
 			byte [] buffer = readFully( file );
-			return new Response( Status.OK, buffer );
+			return new Response( Status.OK, getContentType( file.getName(), buffer ), buffer );
 		} catch( FileNotFoundException exception ) {
 			return new Response( Status.NOT_FOUND );
 		} catch( IOException exception ) {
