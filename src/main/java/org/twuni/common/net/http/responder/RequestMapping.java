@@ -63,6 +63,34 @@ public class RequestMapping implements Responder {
 
 	}
 
+  /**
+   * Convenience method to map the given URL pattern to a static response.
+   * The equivalent of writing:
+   * <blockquote>
+   *   <code>map( Method.GET, pattern, handler )</code>
+   * </blockquote>
+   *
+   * @param pattern The URL pattern to map.
+   * @param handler The handler for the given URL pattern.
+   */
+	public void map( String pattern, Responder handler ) {
+	  map( Method.GET, pattern, handler );
+	}
+
+  /**
+   * Convenience method to map the given URL pattern to a static response.
+   * The equivalent of writing:
+   * <blockquote>
+   *   <code>map( pattern, new StaticResponder( Status.OK, response ) )</code>
+   * </blockquote>
+   *
+   * @param pattern The URL pattern to map.
+   * @param response The static response to send.
+   */
+	public void map( String pattern, String response ) {
+	  map( pattern, new StaticResponder( Status.OK, response ) );
+	}
+
 	@Override
 	public Response respondTo( Request request ) {
 		return lookup( request.getMethod(), request.getResource() ).respondTo( request );
