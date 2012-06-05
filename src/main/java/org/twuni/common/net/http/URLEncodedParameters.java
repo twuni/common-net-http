@@ -6,14 +6,14 @@ import java.net.URLEncoder;
 
 import org.twuni.common.MultiValueMap;
 
-public class UrlEncodedParameters extends MultiValueMap<String, String> {
+public class URLEncodedParameters extends MultiValueMap<String, String> {
 
 	private static final String UTF_8 = "UTF-8";
 	
-	public UrlEncodedParameters() {
+	public URLEncodedParameters() {
 	}
 
-	public UrlEncodedParameters( String parameters ) {
+	public URLEncodedParameters( String parameters ) {
 		for( String pair : parameters.split( "&" ) ) {
 			int index = pair.indexOf( '=' );
 			String key = decode( pair.substring( 0, index ) );
