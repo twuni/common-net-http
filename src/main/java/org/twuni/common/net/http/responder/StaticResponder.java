@@ -8,16 +8,24 @@ public class StaticResponder implements Responder {
 
 	private final Response response;
 
-	public StaticResponder( Status status, String contentType, String body ) {
-		this.response = new Response( status, contentType, body );
+	public StaticResponder( Status status ) {
+		response = new Response( status );
 	}
 
 	public StaticResponder( Status status, String body ) {
-		this.response = new Response( status, body );
+		response = new Response( status, body );
 	}
 
-	public StaticResponder( Status status ) {
-		this.response = new Response( status );
+	public StaticResponder( Status status, String contentType, String body ) {
+		response = new Response( status, contentType, body );
+	}
+
+	public StaticResponder( String body ) {
+		this( Status.OK, body );
+	}
+
+	public StaticResponder( String contentType, String body ) {
+		this( Status.OK, contentType, body );
 	}
 
 	@Override
