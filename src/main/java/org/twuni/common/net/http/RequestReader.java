@@ -13,14 +13,36 @@ import org.slf4j.LoggerFactory;
 import org.twuni.common.net.exception.ConnectionClosedException;
 import org.twuni.common.net.http.exception.UnsupportedMethodException;
 import org.twuni.common.net.http.request.Request;
+import org.twuni.common.net.http.request.validation.HeaderValidator;
+import org.twuni.common.net.http.request.validation.PreambleValidator;
+import org.twuni.common.validation.Validator;
 
 final class RequestReader {
 
 	private static final Pattern HEADER = Pattern.compile( "^([^:]+): (.+)$" );
 
 	private final Logger log = LoggerFactory.getLogger( getClass() );
+	private final int maximumNumberOfInvalidLines = 5;
+	private final int maximumNumberOfHeaderLines = 50;
+	private final int maximumContentLength = 1024 * 1024 * 10;
+
+	private void extractRequestBody( Reader reader, Request request ) throws IOException {
+
+		int length = Integer.parseInt( request.getHeaders().get( "Content-Length", "0" ) );
+
+		if( length > 0 ) {
+			char [] buffer = new char [length];
+			for( int read = 0; read < length; read += reader.read( buffer, read, buffer.length - read ) ) {
+			}
+			request.setContent( new String( buffer ).getBytes() );
+		}
+
+	}
 
 	public Request read( InputStream from ) throws IOException {
+
+		Validator<String> preambleValidator = new PreambleValidator( maximumNumberOfInvalidLines );
+		Validator<String> headerValidator = new HeaderValidator( maximumNumberOfHeaderLines, maximumNumberOfInvalidLines, maximumContentLength );
 
 		Request request = null;
 		BufferedReader reader = new BufferedReader( new InputStreamReader( from ) );
@@ -28,6 +50,8 @@ final class RequestReader {
 		for( String line = reader.readLine(); line != null && !"".equals( line ); line = reader.readLine() ) {
 
 			if( request == null ) {
+
+				preambleValidator.validate( line );
 
 				String [] preamble = line.split( " " );
 
@@ -52,6 +76,8 @@ final class RequestReader {
 				break;
 			}
 
+			headerValidator.validate( line );
+
 			Matcher matcher = HEADER.matcher( line );
 
 			request.getHeaders().add( matcher.replaceAll( "$1" ), matcher.replaceAll( "$2" ) );
@@ -65,19 +91,6 @@ final class RequestReader {
 		extractRequestBody( reader, request );
 
 		return request;
-
-	}
-
-	private void extractRequestBody( Reader reader, Request request ) throws IOException {
-
-		int length = Integer.parseInt( request.getHeaders().get( "Content-Length", "0" ) );
-
-		if( length > 0 ) {
-			char [] buffer = new char [length];
-			for( int read = 0; read < length; read += reader.read( buffer, read, buffer.length - read ) ) {
-			}
-			request.setContent( new String( buffer ).getBytes() );
-		}
 
 	}
 
