@@ -47,6 +47,8 @@ final class RequestReader {
 		Request request = null;
 		BufferedReader reader = new BufferedReader( new InputStreamReader( from ) );
 
+		// FIXME: Validate line length against a pre-configured maximum to prevent really long lines
+		// from clogging system resources.
 		for( String line = reader.readLine(); line != null && !"".equals( line ); line = reader.readLine() ) {
 
 			if( request == null ) {
