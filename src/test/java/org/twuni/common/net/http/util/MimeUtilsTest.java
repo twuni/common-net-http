@@ -10,7 +10,7 @@ public class MimeUtilsTest {
 	public void testGetTypeByFilenameWithCssExtension() {
 		String filename = "about.css";
 		String expected = "text/css";
-		String actual = MimeUtils.getContentType( filename );
+		String actual = MIMEUtils.getContentType( filename );
 		Assert.assertEquals( expected, actual );
 	}
 
@@ -18,7 +18,7 @@ public class MimeUtilsTest {
 	public void testGetTypeByContentForObviousHtml() {
 		byte [] content = "<html>\n<head>\n<title>Webpage</title>\n</head>\n<body>\nHello, world!\n</body>\n</html>\n".getBytes();
 		String expected = "text/html";
-		String actual = MimeUtils.getContentType( content );
+		String actual = MIMEUtils.getContentType( content );
 		Assert.assertEquals( expected, actual );
 	}
 
@@ -27,7 +27,7 @@ public class MimeUtilsTest {
 		String filename = "about.css";
 		byte [] content = Base64.decode( "12345Abcd12340abfha38afl98SAFNZofeu=" );
 		String expected = "text/css";
-		Assert.assertEquals( expected, MimeUtils.getContentType( filename, content ) );
+		Assert.assertEquals( expected, MIMEUtils.getContentType( filename, content ) );
 	}
 
 }

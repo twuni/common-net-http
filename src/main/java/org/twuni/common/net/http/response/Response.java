@@ -1,6 +1,6 @@
 package org.twuni.common.net.http.response;
 
-import static org.twuni.common.net.http.util.MimeUtils.getContentType;
+import static org.twuni.common.net.http.util.MIMEUtils.getContentType;
 
 import org.twuni.common.net.http.Header;
 import org.twuni.common.net.http.Message;

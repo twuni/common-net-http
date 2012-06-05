@@ -1,6 +1,6 @@
 package org.twuni.common.net.http.responder;
 
-import static org.twuni.common.net.http.util.MimeUtils.getContentType;
+import static org.twuni.common.net.http.util.MIMEUtils.getContentType;
 
 import java.io.File;
 import java.io.FileInputStream;

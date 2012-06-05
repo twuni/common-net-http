@@ -5,7 +5,7 @@ import java.util.Collection;
 import eu.medsea.mimeutil.MimeType;
 import eu.medsea.mimeutil.MimeUtil2;
 
-public class MimeUtils {
+public class MIMEUtils {
 
 	private static final MimeType UNKNOWN_TYPE = new MimeType( "application/octet-stream" );
 	private static final MimeUtil2 MIME = new MimeUtil2();
