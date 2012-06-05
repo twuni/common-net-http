@@ -7,49 +7,72 @@ servlet API for our web applications. It's time for a new Java web server that i
 on the servlet API.
 
 This project aims to provide a lean interface with which your web applications can be shared
-with the world. Dependency injection and concise design are the two guiding tenets.
+with the world.
 
 
-Sample Code
------------
+Getting Started
+---------------
 
-Here is a simple Hello World example:
+Let's start with a simple *Hello World* example:
 
-	RequestMapping mapping = new RequestMapping();
-	mapping.map( Method.GET, "/hello", new StaticResponder( Status.OK, "Hello, world!" ) );
-	new Server( 8080, mapping ).start();
+	new HTTPServer( 8080, "Hello, world!" ).start();
 
-This will start an HTTP server on port `8080` which responds to a `GET` request for `/hello`
-by answering `Hello, world!`. It will respond to all other requests with an HTTP 404 or 405 error.
-Let's dissect this code line-by-line to see what is happening here.
+Loading `http://localhost:8080/` in a browser will give you this:
 
-	RequestMapping mapping = new RequestMapping();
+	Hello, world!
 
-This simply initializes a new request mapping. Not much to see here.
+In fact, loading `http://localhost:8080/foo` would also give you this response.
 
-	mapping.map( Method.GET, "/hello", new StaticResponder( Status.OK, "Hello, world!" ) );
 
-Hey, this isn't so bad, either! Here, we are mapping the `GET` method and the URI pattern `/hello`
-to a request handler. In this case, we are just using a static response every time, so we're using
-the `StaticResponder` class. We want the request to succeed, so we use `Status.OK`. Finally, we say
-that we want our static response to be *Hello, world!*.
+Routes
+------
 
-	new Server( 8080, mapping ).start();
+Adding distinct routes is easy:
 
-Here, we are saying that we want to start up a server on port `8080` using the mapping we just put together.
-
-If you prefer, you can also use annotations to create your request mappings:
-
-	@RespondsTo( "/hello" )
-	public class HelloWorld implements Responder {
+	Routes routes = new Routes();
 	
-		public static void main( String [] args ) {
-			new Server( 8080, HelloWorld.class ).start();
-		}
+	routes.add( "/hello", "Hello, world!" );
+	routes.add( "/goodbye", "Goodbye, my love." );
+	
+	new HTTPServer( 8080, routes ).start();
+
+You can also specify the HTTP method:
+
+	routes.add( Method.POST, "/user", "You created a new user. Congratulations." );
+
+
+Responders
+----------
+
+Routes are mapped to implementations of the `Responder` interface, which contain discrete
+pieces of application logic related to that route. For example, you might have
+a `CreateUser` responder that looks something like this:
+
+	@RespondsTo( method = Method.POST, value = "/users" )
+	public class CreateUser implements Responder {
+	
+		private final Adapter<Request, User> adapter = new CreateUserRequestAdapter();
 	
 		@Override
 		public Response respondTo( Request request ) {
-			return new Response( Status.OK, "Hello, world!" );
+			User user = adapter.adapt( request );
+			user.save();
+			return new Response( user.toJSON() );
 		}
-	
+		
 	}
+
+Since this class uses the `@RespondsTo` annotation, you can tell your routes to scan this class:
+
+	routes.scan( CreateUser.class );
+
+...or you could configure the route explicitly:
+
+	routes.add( Method.POST, "/users", new CreateUser() );
+
+
+Limitations
+-----------
+
+This is not a full-service application development framework. For all but the most simple web
+applications, an MVC framework should probably live between this and your application logic.
