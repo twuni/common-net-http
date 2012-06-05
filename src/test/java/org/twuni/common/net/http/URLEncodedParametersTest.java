@@ -3,7 +3,7 @@ package org.twuni.common.net.http;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class UrlEncodedParametersTest {
+public class URLEncodedParametersTest {
 
 	@Test
 	public void testSinglePairDecoding() {

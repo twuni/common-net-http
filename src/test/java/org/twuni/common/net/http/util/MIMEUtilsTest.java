@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.twuni.common.util.Base64;
 
-public class MimeUtilsTest {
+public class MIMEUtilsTest {
 
 	@Test
 	public void testGetTypeByFilenameWithCssExtension() {
